@@ -3,6 +3,7 @@ import styles from './SignupForm.module.scss';
 import cx from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
 import { nextStep } from '../../store/actions/formStepsAction';
+import ProgressBar from '../ProgressBar';
 
 const SignupForm = () => {
     const step = useSelector(state => state.stepState.step);
@@ -15,6 +16,7 @@ const SignupForm = () => {
     return (
         <div className={styles.signup}>
             <h2 className={styles.signup__header}>Signup</h2>
+            <ProgressBar />
             {
                 step <= 2 && (
                     <div className={styles.signup__footer}>
