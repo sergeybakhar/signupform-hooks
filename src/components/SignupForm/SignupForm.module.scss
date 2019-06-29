@@ -1,0 +1,53 @@
+@import '../../scss/variables';
+
+.signup {
+    width: 405px;
+    height: 550px;
+    border: 1px solid $secondary-color;
+    border-radius: 10px;
+    position: relative;
+
+    &__header {
+        font-weight: 300;
+        text-align: center;
+        color: $primary-color;
+    }
+
+    &__footer {
+        position: absolute;
+        bottom: 0;
+        padding: 20px 15px;
+        border-top: 1px solid $secondary-color;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    &__btn {
+        border: none;
+        background: none;
+        cursor: pointer;
+        color: $primary-color;
+        font-size: 15px;
+        font-weight: 300;
+        font-family: $primary-font;
+        transition: color 0.3s;
+
+        &--gray-txt {
+            color: $text-color-light;
+            transition: color 0.3s;
+
+            &:hover {
+                color: darken($text-color-light, 20%)
+            }
+        }
+
+        &:hover {
+            color: darken($primary-color, 20%)
+        }
+    }
+
+    i {
+        -webkit-text-stroke: 1px white;
+    }
+}

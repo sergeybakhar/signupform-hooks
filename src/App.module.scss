@@ -1,0 +1,10 @@
+@import './scss/variables';
+
+.app {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: $primary-font;
+    font-weight: 300;
+}
