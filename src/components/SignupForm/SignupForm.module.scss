@@ -20,7 +20,7 @@
         border-top: 1px solid $secondary-color;
         width: 100%;
         display: flex;
-        justify-content: space-between;
+        justify-content: flex-end;
     }
 
     &__btn {
@@ -36,6 +36,7 @@
         &--gray-txt {
             color: $text-color-light;
             transition: color 0.3s;
+            margin-right: auto;
 
             &:hover {
                 color: darken($text-color-light, 20%)
