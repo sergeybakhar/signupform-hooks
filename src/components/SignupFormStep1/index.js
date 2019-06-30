@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import styles from './SignupFormStep1.module.scss';
 import cx from 'classnames';
+import { addUser } from '../../store/actions/addUserAction';
 
 // eslint-disable-next-line
 const validEmailRegex = RegExp(/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i);
@@ -11,6 +13,9 @@ const SignupFormStep1 = () => {
     const [isValValid, setValidVal] = useState({ isEmailValid: false, isPasswordValid: false, isPasswordConfirmed: false });
     const { email, password, confirmPassword } = values;
     const { isEmailValid, isPasswordValid, isPasswordConfirmed } = isValValid;
+
+    const user = useSelector(state => state.userState.user);
+    const dispatch = useDispatch();
 
     const handleInputChange = e => {
         const { name, value } = e.target;
@@ -31,6 +36,12 @@ const SignupFormStep1 = () => {
         }
     }
 
+    useEffect(() => {
+        if (isEmailValid && isPasswordValid && isPasswordConfirmed) {
+            dispatch(addUser(values))
+        }
+    }, [dispatch, isEmailValid, isPasswordValid, isPasswordConfirmed, values]);
+
     return (
         <div className={styles['form-step1']}>
             <div className={styles['form-step1__item']}>
@@ -47,7 +58,7 @@ const SignupFormStep1 = () => {
                     type="email"
                     name="email"
                     id="email"
-                    value={values.email}
+                    value={user ? user.email : email}
                     onChange={handleInputChange}
                 />
             </div>
@@ -64,7 +75,7 @@ const SignupFormStep1 = () => {
                     type="password"
                     name="password"
                     id="password"
-                    value={values.password}
+                    value={user ? user.password : password}
                     onChange={handleInputChange}
                 />
             </div>
@@ -81,7 +92,7 @@ const SignupFormStep1 = () => {
                     type="password"
                     name="confirmPassword"
                     id="confirmPassword"
-                    value={values.confirmPassword}
+                    value={user ? user.password : confirmPassword}
                     onChange={handleInputChange}
                 />
             </div>

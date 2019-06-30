@@ -14,11 +14,25 @@ const SignupForm = () => {
         dispatch(nextStep(step))
     }
 
+    const showSteps = step => {
+        switch (step) {
+            case 1:
+                return <SignupFormStep1 />;
+            // case 2:
+            //   return <Warning text={text} />;
+            // case 3:
+            //   return <Error text={text} />;
+            default:
+                return null;
+        }
+    }
+
     return (
         <div className={styles.signup}>
             <h2 className={styles.signup__header}>Signup</h2>
             <ProgressBar />
-            <SignupFormStep1 />
+            {/* <SignupFormStep1 /> */}
+            {showSteps(step)}
             {
                 step <= 2 && (
                     <div className={styles.signup__footer}>
