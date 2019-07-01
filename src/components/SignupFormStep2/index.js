@@ -10,22 +10,35 @@ const SignupFormStep2 = () => {
         dateMonth: '',
         dateYear: '',
         gender: 'male',
-        infoValue: null
+        infoValue: ''
     });
     const [isValValid, setValidVal] = useState({
         isDateValid: false,
         isDateDayValid: false,
         isDateMonthValid: false,
+        isDateYearValid: false,
+        isAgeValid: false,
     });
     const { dateDay, dateMonth, dateYear, gender, infoValue } = values;
-    const { isDateDayValid, isDateMonthValid, isDateValid } = isValValid;
+    const { isDateDayValid, isDateMonthValid, isDateValid, isDateYearValid, isAgeValid } = isValValid;
 
     const user = useSelector(state => state.userState.user);
     const dispatch = useDispatch();
 
     const handleInputChange = e => {
         const { name, value } = e.target;
-        setValues(values => ({ ...values, [name]: value }));
+
+        setValues(values => ({
+            ...values,
+            [name]: value,
+        }));
+
+        if (name === 'male' || name === 'female' || name === 'unspecified') {
+            setValues(values => ({
+                ...values,
+                gender: value,
+            }));
+        }
 
         switch (name) {
             case 'dateDay':
@@ -42,19 +55,46 @@ const SignupFormStep2 = () => {
                     isDateMonthValid: dateMonthValue && dateMonthValue <= 12 && dateMonthValue >= 1
                 });
                 break;
+            case 'dateYear':
+                let dateYearValue = parseInt(value);
+                setValidVal({
+                    ...isValValid,
+                    isDateYearValid: dateYearValue && dateYearValue <= 2019 && dateYearValue >= 1897
+                });
+                break;
             default:
                 break;
         }
     }
+    // let today = new Date().toLocaleDateString()
+    // let dateOfBirth = `${dateMonth} ${dateDay} ${dateYear}`;
+
+
 
     useEffect(() => {
-        if (isDateDayValid && isDateMonthValid) {
-            setValidVal({
-                ...isValValid,
-                isDateValid: true
-            })
+
+        let today = new Date();
+        let birthDate = new Date(`${dateMonth} ${dateDay} ${dateYear}`);
+        var age = today.getFullYear() - birthDate.getFullYear();
+        var m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
         }
-    }, [isDateDayValid, isDateMonthValid, isDateValid, isValValid]);
+
+        if (isDateDayValid && isDateMonthValid && isDateYearValid) {
+            setValidVal(isValValid => ({
+                ...isValValid,
+                isDateValid: true,
+                isAgeValid: age >= 18
+            }))
+        } else {
+            setValidVal(isValValid => ({
+                ...isValValid,
+                isDateValid: false,
+                isAgeValid: false
+            }))
+        }
+    }, [isDateDayValid, isDateMonthValid, isDateValid, isDateYearValid, isAgeValid, dateMonth, dateDay, dateYear]);
 
     // useEffect(() => {
     //     if (isDateValid && isPasswordValid && isPasswordConfirmed) {
@@ -68,7 +108,8 @@ const SignupFormStep2 = () => {
                     className={cx(styles['form-step2__label'], { [styles['form-step2__label--invalid']]: !isDateValid })}
                 >
                     {
-                        dateDay.length === 0 ? 'date of birth is required' : !isDateValid ? 'date of birth should be valid' : 'date of birth'
+                        // yeah, it looks scary :)
+                        dateDay.length === 0 && dateMonth.length === 0 && dateYear.length === 0 ? 'date of birth is required' : !isDateValid ? 'date of birth should be valid' : !isAgeValid ? 'you must be 18 year old or more' : 'date of birth'
                     }
                 </div>
                 <div className={styles['form-date']}>
@@ -106,31 +147,40 @@ const SignupFormStep2 = () => {
                 </div>
                 <div className={styles['form-gender']}>
                     <label htmlFor="male" className={styles['form-gender__item-label']}>
+                        <span className={styles['form-gender__item-label-text']}>male</span>
                         <input
                             className={styles['form-gender__item-input']}
                             type="radio"
                             id="male"
                             name="male"
                             value="male"
-                            checked={gender === "male"} />
+                            checked={gender === "male"}
+                            onChange={handleInputChange}
+                        />
                     </label>
                     <label htmlFor="female" className={styles['form-gender__item-label']}>
+                        <span className={styles['form-gender__item-label-text']}>female</span>
                         <input
                             className={styles['form-gender__item-input']}
                             type="radio"
                             id="female"
                             name="female"
                             value="female"
-                            checked={gender === "female"} />
+                            checked={gender === "female"}
+                            onChange={handleInputChange}
+                        />
                     </label>
                     <label htmlFor="unspecified" className={styles['form-gender__item-label']}>
+                        <span className={styles['form-gender__item-label-text']}>unspecified</span>
                         <input
                             className={styles['form-gender__item-input']}
                             type="radio"
                             id="unspecified"
                             name="unspecified"
                             value="unspecified"
-                            checked={gender === "unspecified"} />
+                            checked={gender === "unspecified"}
+                            onChange={handleInputChange}
+                        />
                     </label>
                 </div>
             </div>
