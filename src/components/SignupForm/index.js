@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { nextStep } from '../../store/actions/formStepsAction';
 import ProgressBar from '../ProgressBar';
 import SignupFormStep1 from '../SignupFormStep1';
+import SignupFormStep2 from '../SignupFormStep2';
 
 const SignupForm = () => {
     const step = useSelector(state => state.stepState.step);
@@ -18,8 +19,8 @@ const SignupForm = () => {
         switch (step) {
             case 1:
                 return <SignupFormStep1 />;
-            // case 2:
-            //   return <Warning text={text} />;
+            case 2:
+                return <SignupFormStep2 />;
             // case 3:
             //   return <Error text={text} />;
             default:

@@ -1,8 +1,11 @@
 import { ADD_USER } from '../actions/actionTypes';
 
 const initialState = {
-    email: '',
-    password: '',
+    user: {
+        // email: '',
+        // password: '',
+        // date: ''
+    }
 };
 
 export default function (state = initialState, action) {
