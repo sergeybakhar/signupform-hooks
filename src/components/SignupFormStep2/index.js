@@ -10,7 +10,7 @@ const SignupFormStep2 = () => {
         dateMonth: '',
         dateYear: '',
         gender: 'male',
-        infoValue: ''
+        info: ''
     });
     const [isValValid, setValidVal] = useState({
         isDateValid: false,
@@ -19,24 +19,24 @@ const SignupFormStep2 = () => {
         isDateYearValid: false,
         isAgeValid: false,
     });
-    const { dateDay, dateMonth, dateYear, gender, infoValue } = values;
+    const { dateDay, dateMonth, dateYear, gender, info } = values;
     const { isDateDayValid, isDateMonthValid, isDateValid, isDateYearValid, isAgeValid } = isValValid;
-
-    const user = useSelector(state => state.userState.user);
+    const userData = useSelector(state => state.userState.user);
+    let userDataLength = Object.entries(userData).length;
     const dispatch = useDispatch();
 
     const handleInputChange = e => {
         const { name, value } = e.target;
 
-        setValues(values => ({
-            ...values,
-            [name]: value,
-        }));
-
         if (name === 'male' || name === 'female' || name === 'unspecified') {
             setValues(values => ({
                 ...values,
                 gender: value,
+            }));
+        } else {
+            setValues(values => ({
+                ...values,
+                [name]: value,
             }));
         }
 
@@ -66,13 +66,8 @@ const SignupFormStep2 = () => {
                 break;
         }
     }
-    // let today = new Date().toLocaleDateString()
-    // let dateOfBirth = `${dateMonth} ${dateDay} ${dateYear}`;
-
-
 
     useEffect(() => {
-
         let today = new Date();
         let birthDate = new Date(`${dateMonth} ${dateDay} ${dateYear}`);
         var age = today.getFullYear() - birthDate.getFullYear();
@@ -96,11 +91,31 @@ const SignupFormStep2 = () => {
         }
     }, [isDateDayValid, isDateMonthValid, isDateValid, isDateYearValid, isAgeValid, dateMonth, dateDay, dateYear]);
 
-    // useEffect(() => {
-    //     if (isDateValid && isPasswordValid && isPasswordConfirmed) {
-    //         dispatch(addUser(values))
-    //     }
-    // }, [dispatch, isDateValid, isPasswordValid, isPasswordConfirmed, values]);
+    useEffect(() => {
+        return () => { return dispatch(addUser({ ...values, ...isValValid })); }
+
+    }, [dispatch, values, isValValid]);
+
+    useEffect(() => {
+        if (userDataLength > 6) {
+            setValues(() => ({
+                dateDay: userData.dateDay,
+                dateMonth: userData.dateMonth,
+                dateYear: userData.dateYear,
+                gender: userData.gender,
+                info: userData.info
+            }));
+
+            setValidVal(() => ({
+                isDateValid: userData.isDateValid,
+                isAgeValid: userData.isAgeValid,
+                isDateDayValid: userData.isDateDayValid,
+                isDateMonthValid: userData.isDateMonthValid,
+                isDateYearValid: userData.isDateYearValid,
+            }));
+        }
+    }, []); // Why are you yelling at me? I just want componentDidMount
+
     return (
         <div className={styles['form-step2']}>
             <div className={styles['form-step2__item']}>
@@ -109,7 +124,19 @@ const SignupFormStep2 = () => {
                 >
                     {
                         // yeah, it looks scary :)
-                        dateDay.length === 0 && dateMonth.length === 0 && dateYear.length === 0 ? 'date of birth is required' : !isDateValid ? 'date of birth should be valid' : !isAgeValid ? 'you must be 18 year old or more' : 'date of birth'
+                        !dateDay && !dateMonth && !dateYear ? (
+                            'date of birth is required'
+                        ) : (
+                            !isDateValid
+                        ) ? (
+                                    'date of birth should be valid'
+                                ) : (
+                                    !isAgeValid
+                                ) ? (
+                                        'you must be 18 year old or more'
+                                    ) : (
+                                        'date of birth'
+                                    )
                     }
                 </div>
                 <div className={styles['form-date']}>
@@ -140,16 +167,21 @@ const SignupFormStep2 = () => {
                 </div>
             </div>
             <div className={styles['form-step2__item']}>
-                <div
-                    className={cx(styles['form-step2__label'], { [styles['form-step2__label--invalid']]: !isDateDayValid })}
-                >
+                <div className={styles['form-step2__label']}>
                     gender
                 </div>
                 <div className={styles['form-gender']}>
-                    <label htmlFor="male" className={styles['form-gender__item-label']}>
-                        <span className={styles['form-gender__item-label-text']}>male</span>
+                    <label
+                        htmlFor="male"
+                        className={cx(styles['form-gender__label'], { [styles['form-gender__label--checked']]: gender === "male" })}
+                    >
+                        <span
+                            className={cx(styles['form-gender__label-text'], { [styles['form-gender__label-text--checked']]: gender === "male" })}
+                        >
+                            male
+                        </span>
                         <input
-                            className={styles['form-gender__item-input']}
+                            className={styles['form-gender__input']}
                             type="radio"
                             id="male"
                             name="male"
@@ -158,10 +190,17 @@ const SignupFormStep2 = () => {
                             onChange={handleInputChange}
                         />
                     </label>
-                    <label htmlFor="female" className={styles['form-gender__item-label']}>
-                        <span className={styles['form-gender__item-label-text']}>female</span>
+                    <label
+                        htmlFor="female"
+                        className={cx(styles['form-gender__label'], { [styles['form-gender__label--checked']]: gender === "female" })}
+                    >
+                        <span
+                            className={cx(styles['form-gender__label-text'], { [styles['form-gender__label-text--checked']]: gender === "female" })}
+                        >
+                            female
+                        </span>
                         <input
-                            className={styles['form-gender__item-input']}
+                            className={styles['form-gender__input']}
                             type="radio"
                             id="female"
                             name="female"
@@ -170,10 +209,17 @@ const SignupFormStep2 = () => {
                             onChange={handleInputChange}
                         />
                     </label>
-                    <label htmlFor="unspecified" className={styles['form-gender__item-label']}>
-                        <span className={styles['form-gender__item-label-text']}>unspecified</span>
+                    <label
+                        htmlFor="unspecified"
+                        className={cx(styles['form-gender__label'], { [styles['form-gender__label--checked']]: gender === "unspecified" })}
+                    >
+                        <span
+                            className={cx(styles['form-gender__label-text'], { [styles['form-gender__label-text--checked']]: gender === "unspecified" })}
+                        >
+                            unspecified
+                        </span>
                         <input
-                            className={styles['form-gender__item-input']}
+                            className={styles['form-gender__input']}
                             type="radio"
                             id="unspecified"
                             name="unspecified"
@@ -190,19 +236,21 @@ const SignupFormStep2 = () => {
                     htmlFor="info">
                     where did you hear about us?
                 </label>
-                <select
-                    className={styles['form-step2__input']}
-                    type="password"
-                    name="info"
-                    id="info"
-                    value={infoValue}
-                    onChange={handleInputChange}
-                >
-                    <option value=""></option>
-                    <option value="my invisible friend">My friend told me</option>
-                    <option value="Thanos">Someone snapping their fingers</option>
-                    <option value="zdes bil Serega">Privet Mir!</option>
-                </select>
+                <div className={styles['form-step2__select-wrapper']}>
+                    <select
+                        className={styles['form-info']}
+                        type="password"
+                        name="info"
+                        id="info"
+                        value={info}
+                        onChange={handleInputChange}
+                    >
+                        <option value=""></option>
+                        <option value="my invisible friend">My friend told me</option>
+                        <option value="Thanos">Someone snapping their fingers</option>
+                        <option value="zdes bil Serega">Privet Mir!</option>
+                    </select>
+                </div>
             </div>
         </div >
     )

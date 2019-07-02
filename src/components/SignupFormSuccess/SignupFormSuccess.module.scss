@@ -1,0 +1,60 @@
+@import '../../scss/variables';
+
+.form-success {
+    display: flex;
+    padding-top: 100px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    &__pic {
+        width: 170px;
+        height: 170px;
+        background-color: $success-color;
+        border-radius: 50%;
+        margin-bottom: 35px;
+        position: relative;
+
+        &::after {
+            content: "";
+            width: 50px;
+            height: 77px;
+            border: solid #fff;
+            border-width: 0 10px 10px 0px;
+            display: inline-block;
+            transform: rotate(44deg);
+            position: absolute;
+            right: 60px;
+            top: 37px;
+        }
+    }
+
+    &__btn {
+        background-color: Transparent;
+        background-repeat: no-repeat;
+        border: none;
+        cursor: pointer;
+        overflow: hidden;
+        outline: none;
+        color: $primary-color;
+        font-family: $primary-font;
+        font-size: 17px;
+        border: 1px solid $primary-color;
+        border-radius: 3px;
+        padding: 13px;
+        transition: all 0.1s;
+
+        &:active {
+            font-size: 16px;
+        }
+
+        &:hover {
+            background-color: $primary-color;
+            color: #fff;
+
+            i {
+                -webkit-text-stroke: 1px $primary-color;
+            }
+        }
+    }
+}

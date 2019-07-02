@@ -33,6 +33,15 @@
         font-family: $primary-font;
         transition: color 0.3s;
 
+        &:disabled,
+        &[disabled] {
+            color: $text-color-dark;
+
+            &:hover {
+                color: $text-color-dark;
+            }
+        }
+
         &--gray-txt {
             color: $text-color-light;
             transition: color 0.3s;
